@@ -26,11 +26,13 @@ type Frame(w,h,changes) =
         let snakeIndexes = List.map (fun s -> toOneD (fst s) (snd s) w) tail
         let isSnake i =  if i = snakeIdx then true else false || List.contains i snakeIndexes
         let res = List.mapi (fun i -> if isSnake i then (fun x -> 'x') else (fun x -> '.') ) [0..w*h]
-        for y in [0..h-1] do
-            let sz  = y  * w
-            res |> List.skip sz |> List.take w |> List.map (fun x -> printf "%A" x)
+        let action state x = 
+            let d = state |> List.skip (x*w) |> List.take w |> List.map (fun d -> printf "%c" d)
             printfn "%s" ""
-        ()
+            ()
+
+        [0..h-1] |> List.map (fun x -> action res x) |> ignore
+
 
 
 let moveSnake (snake:Snake) x y =
