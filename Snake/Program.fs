@@ -12,12 +12,7 @@ type Game =  {snake:Snake; food:int*int} with
     member this.score = this.snake.length
 
 
-type Frame(w,h,changes) = 
-    member this.changes = changes
-    member this.w = w
-    member this.h = h
-    member this.Write pos ch = Frame(w,h,changes)
-    member this.Read pos = 'a'
+type Frame(w,h) =
     member this.PrintFrame (snake:Snake) tail =
         let toOneD x y w = y*w+x
         let snakeIdx = toOneD snake.x snake.y w
@@ -106,7 +101,7 @@ let updateGame (state:Game) (move:Move) =
 [<EntryPoint>]
 let main argv =
     let mutable snake = {x=0;y=0;tail=[(0,0); (0,0)]}
-    let frame = new Frame(10,10,[])
+    let frame = new Frame(10,10)
     let mutable originalTail = updateTail snake snake.tail
     frame.PrintFrame snake (3,3)
     let mutable game = {snake=snake;food=(3,3)}
