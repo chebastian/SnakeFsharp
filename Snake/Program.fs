@@ -25,7 +25,6 @@ type Frame(w,h,changes) =
     member this.PrintFrame (snake:Snake) tail =
         let toOneD x y w = y*w+x
         let snakeIdx = toOneD snake.x snake.y w
-        //let snakeIndexes = (toOneD (fst tail) (snd tail)) :: List.map (fun s -> toOneD (fst s) (snd s) w) snake.tail
         let foodIdx = (toOneD (fst tail) (snd tail) w)
         let snakeIndexes = List.map (fun s -> toOneD (fst s) (snd s) w) snake.tail
         let isSnake i =  if i = snakeIdx then true else false || List.contains i snakeIndexes
@@ -43,7 +42,6 @@ let moveSnake (snake:Snake) x y =
     {x = snake.x + x; y=snake.y + y; tail=snake.tail}
 
 let snakeEatAlt (snake:Snake) = 
-    //{x=snake.x;y=snake.y;tail=(snake.x,snake.y)::snake.tail}
     {x=snake.x;y=snake.y;tail=snake.tail @ [(snake.x,snake.y)]}
     
 let snakeEat food (snake:Snake) = 
@@ -57,7 +55,6 @@ let eatFood (snake:Snake) food =
     List.except [(snake.x,snake.y)] food
 
 let updateTail (snake:Snake) tail =
-    //if snake.length > List.length tail then (snake.x,snake.y) :: tail else (snake.x,snake.y) :: List.tail tail
     if List.length tail > 0 then
         if snake.length > List.length tail then (snake.x,snake.y) :: tail else (List.tail tail) @ [(snake.x,snake.y)]
     else
@@ -122,9 +119,4 @@ let main argv =
         
         game <- updateGame game (stringToTypeMove i)
         frame.PrintFrame game.snake game.food
-        //let move = stringToMove (stringToTypeMove i) snake
-        //let newTail = updateTail snake originalTail
-        //frame.PrintFrame move newTail
-        //snake <- move
-        //originalTail <- newTail
     0 // return an integer exit code
