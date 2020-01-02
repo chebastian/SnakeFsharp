@@ -6,7 +6,7 @@ open Program
 
 [<Fact>]
 let ``Snake can move`` () =
-    let mySnake = {x=0;y=0;length=0}
+    let mySnake = {x=0;y=0;tail=[]}
     let moved = moveSnake mySnake 1 0
     Assert.True(moved.x = 1)
     Assert.True(moved.y = 0)
@@ -14,7 +14,7 @@ let ``Snake can move`` () =
 [<Fact>]
 let ``Snake can eat and grow ``() =
     let food = [(1,0)]
-    let snake = {x=0;y=0;length=0}
+    let snake = {x=0;y=0;tail=[]}
     let moved = moveSnake snake 1 0 
     let fed = snakeEat food moved
     
@@ -22,7 +22,7 @@ let ``Snake can eat and grow ``() =
 
 [<Fact>]
 let ``Snake can eat only if position contains food ``() =
-    let snake = {x=0;y=0;length=0}
+    let snake = {x=0;y=0;tail=[]}
     let moved = moveSnake snake 1 0 
 
     let food = [] 
@@ -31,22 +31,22 @@ let ``Snake can eat only if position contains food ``() =
 
 [<Fact>]
 let ``Eating food decreeses food amount ``() =
-    let snake = {x=1;y=1;length=0}
+    let snake = {x=1;y=1;tail=[]}
     let newFood = eatFood snake [(1,1)]
     Assert.Equal(0,newFood.Length)
 
 [<Fact>]
 let `` Eating food increases player score ``() = 
-    let snake = {x=1;y=1;length=0}
+    let snake = {x=1;y=1;tail=[]}
     let newSnake = snakeEat [(1,1)] snake
-    let game = new Game(newSnake)
+    let game = {snake=newSnake;food=(0,0)}
 
     Assert.Equal(1,game.score)
 
 [<Fact>]
 let `` moving the tails follows ``() =
-    let snake = {x=1;y=1;length=2}
-    let newTail = updateTail snake [(0,1)]
+    let snake = {x=1;y=1;tail=[(0,0);(0,0)]}
+    let newTail = updateTail snake snake.tail
     Assert.True(List.length newTail = 2,"Verify the tail grows when snake length is larger than tail")
 
     let again = updateTail snake newTail
@@ -54,6 +54,11 @@ let `` moving the tails follows ``() =
 
     let movedTail = updateTail snake [(0,0);(1,0)]
     Assert.StrictEqual([(1,0); (1,1)] , movedTail)
+    ()
+
+let ``Game: The player scores by eating food ``() =
+    let game = {snake={x=1;y=1;tail=[]};food=(2,2)}
+    //let state = updateGame game [Move.Left;Move.Left;Move.Left]
     ()
     
 
