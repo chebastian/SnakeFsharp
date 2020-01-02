@@ -2,7 +2,10 @@
 
 open System
 
-let rand = System.Random()
+type stG =
+    static member rand = new System.Random()
+
+let rand = stG.rand
 let random min max = rand.Next(min, max)
 let rand2 min max = (random min max, random min max)
 
@@ -22,9 +25,11 @@ type Frame(w,h,changes) =
     member this.PrintFrame (snake:Snake) tail =
         let toOneD x y w = y*w+x
         let snakeIdx = toOneD snake.x snake.y w
-        let snakeIndexes = List.map (fun s -> toOneD (fst s) (snd s) w) tail
+        //let snakeIndexes = (toOneD (fst tail) (snd tail)) :: List.map (fun s -> toOneD (fst s) (snd s) w) snake.tail
+        let foodIdx = (toOneD (fst tail) (snd tail) w)
+        let snakeIndexes = List.map (fun s -> toOneD (fst s) (snd s) w) snake.tail
         let isSnake i =  if i = snakeIdx then true else false || List.contains i snakeIndexes
-        let res = List.mapi (fun i -> if isSnake i then (fun x -> 'x') else (fun x -> '.') ) [0..w*h]
+        let res = List.mapi (fun i -> if (isSnake i) || i = foodIdx then (fun x -> 'x') else (fun x -> '.') ) [0..w*h]
         let action state x = 
             let d = state |> List.skip (x*w) |> List.take w |> List.map (fun d -> printf "%c" d)
             printfn "%s" ""
@@ -38,7 +43,8 @@ let moveSnake (snake:Snake) x y =
     {x = snake.x + x; y=snake.y + y; tail=snake.tail}
 
 let snakeEatAlt (snake:Snake) = 
-    {x=snake.x;y=snake.y;tail=(snake.x,snake.y)::snake.tail}
+    //{x=snake.x;y=snake.y;tail=(snake.x,snake.y)::snake.tail}
+    {x=snake.x;y=snake.y;tail=snake.tail @ [(snake.x,snake.y)]}
     
 let snakeEat food (snake:Snake) = 
     let hasFoodAtLocation = List.contains (snake.x,snake.y) food
@@ -61,12 +67,12 @@ let createFrame w h ch =
     List.init (w*h) (fun x -> ch)
 
 let rec readLines () = seq{
-    let line = Console.ReadLine()
-    if line = "q" then
-        yield line
+    let line = Console.ReadKey().KeyChar
+    if line = 'q'then
+        yield string line
     else
-        if line <> null then
-            yield line
+        if line <> ' ' then
+            yield string line
             yield! readLines()
 }
 
@@ -93,13 +99,15 @@ let stringToMove move snake =
 
 let gameEat (state:Game) (pos:(int*int)) =
     if state.food = pos then
-        {snake=snakeEatAlt state.snake;food=rand2 8 8}
+        {snake=snakeEatAlt state.snake;food=rand2 0 8}
     else
         {snake=state.snake;food=state.food} 
 
 let updateGame (state:Game) (move:Move) = 
     let moved = stringToMove move state.snake
-    gameEat state (moved.x, moved.y)
+    let gg = gameEat state (moved.x, moved.y)
+    let newSnake = {x=moved.x;y=moved.y;tail=updateTail gg.snake gg.snake.tail}
+    {snake=newSnake;food=gg.food}
 
 
     
@@ -109,12 +117,16 @@ let main argv =
     let mutable snake = {x=0;y=0;tail=[(0,0); (0,0)]}
     let frame = new Frame(10,10,[])
     let mutable originalTail = updateTail snake snake.tail
-    frame.PrintFrame snake 
+    frame.PrintFrame snake (3,3)
+    let mutable game = {snake=snake;food=(3,3)}
 
     for i in readLines() do
-        let move = stringToMove (stringToTypeMove i) snake
-        let newTail = updateTail snake originalTail
-        frame.PrintFrame move newTail
-        snake <- move
-        originalTail <- newTail
+        
+        game <- updateGame game (stringToTypeMove i)
+        frame.PrintFrame game.snake game.food
+        //let move = stringToMove (stringToTypeMove i) snake
+        //let newTail = updateTail snake originalTail
+        //frame.PrintFrame move newTail
+        //snake <- move
+        //originalTail <- newTail
     0 // return an integer exit code
