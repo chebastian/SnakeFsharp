@@ -56,9 +56,20 @@ let `` moving the tails follows ``() =
     Assert.StrictEqual([(1,0); (1,1)] , movedTail)
     ()
 
+[<Fact>]
 let ``Game: The player scores by eating food ``() =
-    let game = {snake={x=1;y=1;tail=[]};food=(2,2)}
-    //let state = updateGame game [Move.Left;Move.Left;Move.Left]
+    let game = {snake={x=1;y=1;tail=[]};food=(2,1)}
+    Assert.True(game.score = 0,"Start with 0 score")
+
+    let state = updateGame game Move.Right
+    Assert.True(state.score = 1,"i moved so i should have points")
+
+    Assert.True((gameEat game (0,0)).score = 0,"no points where no food") 
+    Assert.True((gameEat game (2,1)).score = 1,"Points where food") 
+
+    Assert.True((gameEat game (0,0)).food = (2,1),"Food stays in position when not eaten")
+    Assert.False((gameEat game (2,1)).food = (2,1),"Food moves when eaten")
+
     ()
     
 

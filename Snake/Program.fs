@@ -2,10 +2,9 @@
 
 open System
 
-//type Snake(x,y,len) =
-//    member this.x = x
-//    member this.y = y
-//    member this.length = len
+let rand = System.Random()
+let random min max = rand.Next(min, max)
+let rand2 min max = (random min max, random min max)
 
 type Snake = {x:int; y:int; tail:list<int*int>} with
     member this.length = List.length this.tail
@@ -38,6 +37,9 @@ type Frame(w,h,changes) =
 let moveSnake (snake:Snake) x y =
     {x = snake.x + x; y=snake.y + y; tail=snake.tail}
 
+let snakeEatAlt (snake:Snake) = 
+    {x=snake.x;y=snake.y;tail=(snake.x,snake.y)::snake.tail}
+    
 let snakeEat food (snake:Snake) = 
     let hasFoodAtLocation = List.contains (snake.x,snake.y) food
     if(hasFoodAtLocation) then
@@ -89,10 +91,17 @@ let stringToMove move snake =
     | Move.None -> moveSnake snake 0 0
 
 
+let gameEat (state:Game) (pos:(int*int)) =
+    if state.food = pos then
+        {snake=snakeEatAlt state.snake;food=rand2 8 8}
+    else
+        {snake=state.snake;food=state.food} 
+
 let updateGame (state:Game) (move:Move) = 
-    ()
-    
-    
+    let moved = stringToMove move state.snake
+    gameEat state (moved.x, moved.y)
+
+
     
 
 [<EntryPoint>]
