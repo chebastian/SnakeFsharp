@@ -53,7 +53,7 @@ let `` moving the tails follows ``() =
     Assert.True(List.length again = 2,"Verify that it only grows when snake is longer than tail")
 
     let movedTail = updateTail snake [(0,0);(1,0)]
-    Assert.StrictEqual([(1,1); (1,0)] , movedTail)
+    Assert.StrictEqual([(1,0); (1,1)] , movedTail)
     ()
     
 
