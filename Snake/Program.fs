@@ -108,8 +108,6 @@ let updateGame (state:Game) (move:Move) =
     let gg = gameEat state (moved.x, moved.y)
     let newSnake = {x=moved.x;y=moved.y;tail=updateTail gg.snake gg.snake.tail}
     {snake=newSnake;food=gg.food}
-
-
     
 
 [<EntryPoint>]
