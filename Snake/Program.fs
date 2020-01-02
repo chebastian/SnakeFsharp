@@ -2,12 +2,8 @@
 
 open System
 
-type stG =
-    static member rand = new System.Random()
-
-let rand = stG.rand
-let random min max = rand.Next(min, max)
-let rand2 min max = (random min max, random min max)
+let rand = System.Random()
+let rand2 min max = (rand.Next(min,max),rand.Next(min,max))
 
 type Snake = {x:int; y:int; tail:list<int*int>} with
     member this.length = List.length this.tail
