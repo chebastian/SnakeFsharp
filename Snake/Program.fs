@@ -97,15 +97,25 @@ let updateGame (state:Game) (move:Move) =
     let newSnake = {x=moved.x;y=moved.y;tail=updateTail gg.snake gg.snake.tail}
     {snake=newSnake;food=gg.food}
     
+let rec innerGameLoop game (frame:Frame) =
+    frame.PrintFrame game.snake game.food |> ignore
+    let line = Console.ReadKey().KeyChar
+    if line = 'q'then
+        ()
+    else
+        let nextFrame = updateGame game (stringToTypeMove (string line))
+        innerGameLoop nextFrame frame
+
+let gameLoop game = 
+    let frame = new Frame(8,8)
+    innerGameLoop game frame
+
 
 [<EntryPoint>]
 let main argv =
-    let frame = new Frame(10,10)
-    let mutable snake = {x=0;y=0;tail=[(0,0); (0,0)]}
-    let mutable game = {snake=snake;food=(3,3)}
+    let snake = {x=0;y=0;tail=[(0,0); (0,0)]}
+    let game = {snake=snake;food=(3,3)}
+    gameLoop game
 
-    for i in readLines() do
-        
-        game <- updateGame game (stringToTypeMove i)
-        frame.PrintFrame game.snake game.food
-    0 // return an integer exit code
+
+    0 // return an integer exit code 
