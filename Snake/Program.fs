@@ -1,5 +1,4 @@
-﻿// Learn more about F# at http://fsharp.org
-
+﻿// Learn more about F# at http://fsharp.org 
 open System
 
 let rand = System.Random()
@@ -8,7 +7,7 @@ let rand2 min max = (rand.Next(min,max),rand.Next(min,max))
 type Snake = {x:int; y:int; tail:list<int*int>} with
     member this.length = List.length this.tail
 
-type Game =  {snake:Snake; food:int*int} with
+type Game =  {snake:Snake; food:int*int;alive:bool} with
     member this.score = this.snake.length
 
 
@@ -87,15 +86,19 @@ let stringToMove move snake =
 
 let gameEat (state:Game) (pos:(int*int)) =
     if state.food = pos then
-        {snake=snakeEatAlt state.snake;food=rand2 0 8}
+        {snake=snakeEatAlt state.snake;food=rand2 0 8;alive=true}
     else
-        {snake=state.snake;food=state.food} 
+        {snake=state.snake;food=state.food;alive=true} 
 
+let isValidMove snake move =
+    let newsnake = stringToMove move snake
+    List.contains (newsnake.x,newsnake.y) newsnake.tail |> not
+    
 let updateGame (state:Game) (move:Move) = 
     let moved = stringToMove move state.snake
     let gg = gameEat state (moved.x, moved.y)
     let newSnake = {x=moved.x;y=moved.y;tail=updateTail gg.snake gg.snake.tail}
-    {snake=newSnake;food=gg.food}
+    {snake=newSnake;food=gg.food;alive=isValidMove state.snake move}
     
 let rec innerGameLoop game (frame:Frame) =
     frame.PrintFrame game.snake game.food |> ignore
@@ -104,7 +107,10 @@ let rec innerGameLoop game (frame:Frame) =
         ()
     else
         let nextFrame = updateGame game (stringToTypeMove (string line))
-        innerGameLoop nextFrame frame
+        if nextFrame.alive then
+            innerGameLoop nextFrame frame
+        else
+            ()
 
 let gameLoop game = 
     let frame = new Frame(8,8)
@@ -114,7 +120,7 @@ let gameLoop game =
 [<EntryPoint>]
 let main argv =
     let snake = {x=0;y=0;tail=[(0,0); (0,0)]}
-    let game = {snake=snake;food=(3,3)}
+    let game = {snake=snake;food=(3,3);alive=true}
     gameLoop game
 
 

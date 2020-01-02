@@ -39,7 +39,7 @@ let ``Eating food decreeses food amount ``() =
 let `` Eating food increases player score ``() = 
     let snake = {x=1;y=1;tail=[]}
     let newSnake = snakeEat [(1,1)] snake
-    let game = {snake=newSnake;food=(0,0)}
+    let game = {snake=newSnake;food=(0,0);alive=true}
 
     Assert.Equal(1,game.score)
 
@@ -58,7 +58,7 @@ let `` moving the tails follows ``() =
 
 [<Fact>]
 let ``Game: The player scores by eating food ``() =
-    let game = {snake={x=1;y=1;tail=[]};food=(2,1)}
+    let game = {snake={x=1;y=1;tail=[]};food=(2,1);alive=true}
     Assert.True(game.score = 0,"Start with 0 score")
 
     let state = updateGame game Move.Right
@@ -70,7 +70,21 @@ let ``Game: The player scores by eating food ``() =
 
     Assert.True((gameEat game (0,0)).food = (2,1),"Food stays in position when not eaten")
     Assert.False((gameEat game (2,1)).food = (2,1),"Food moves when eaten") 
+    ()
 
+[<Fact>]
+let ``Moving into self kills snake `` () =
+    //x
+    //x
+    //xx <- Head
+    //xx
+
+    let game = {snake={x=1;y=2;tail=[(0,0);(0,1);(0,2);(0,3);(1,3);]};food=(2,1);alive=true} 
+    let state = updateGame game Move.Left
+    Assert.False(state.alive,"Should have killed snake")
+
+    let aliveState = updateGame game Move.Right
+    Assert.True(aliveState.alive,"snake is alive")
     ()
     
 
