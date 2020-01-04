@@ -49,11 +49,8 @@ let moveHeadToTail newhead newtail =
     | head :: tail -> tail @ [newhead] 
     | [] -> []
 
-let updateTail (snake:Snake) tail =
-    if snake.length > List.length tail then
-        (snake.x,snake.y) :: tail
-    else
-        moveHeadToTail (snake.x,snake.y) tail
+let updateTail (snake:Snake) = 
+    moveHeadToTail (snake.x,snake.y) snake.tail
 
 let createFrame w h ch =
     List.init (w*h) (fun x -> ch)
@@ -102,7 +99,7 @@ let isValidMove snake move =
 let updateGame (state:Game) (move:Move) = 
     let moved = stringToMove move state.snake
     let next = updateSnakeAndFood state (moved.x, moved.y)
-    let newSnake = {moved with tail=updateTail next.snake next.snake.tail}
+    let newSnake = {moved with tail=updateTail next.snake}
     {snake=newSnake;food=next.food;alive=isValidMove state.snake move}
     
 let rec innerGameLoop game (frame:Frame) =

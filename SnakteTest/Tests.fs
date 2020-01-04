@@ -46,14 +46,14 @@ let `` Eating food increases player score ``() =
 [<Fact>]
 let `` moving the tails follows ``() =
     let snake = {x=1;y=1;tail=[(0,0);(0,0)]}
-    let newTail = updateTail snake snake.tail
+    let newTail = updateTail snake
     Assert.True(List.length newTail = 2,"Verify the tail grows when snake length is larger than tail")
 
-    let again = updateTail snake newTail
+    let again = updateTail snake 
     Assert.True(List.length again = 2,"Verify that it only grows when snake is longer than tail")
 
-    let movedTail = updateTail snake [(0,0);(1,0)]
-    Assert.StrictEqual([(1,0); (1,1)] , movedTail)
+    let movedTail = updateTail snake
+    Assert.StrictEqual([(0,0); (1,1)] , movedTail)
     ()
 
 [<Fact>]
