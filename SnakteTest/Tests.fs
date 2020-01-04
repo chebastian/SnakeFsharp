@@ -85,6 +85,4 @@ let ``Moving into self kills snake `` () =
 
     let aliveState = updateGame game Move.Right
     Assert.True(aliveState.alive,"snake is alive")
-    ()
-    
-
+    () 

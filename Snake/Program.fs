@@ -32,7 +32,7 @@ let moveSnake (snake:Snake) x y =
     {x = snake.x + x; y=snake.y + y; tail=snake.tail}
 
 let snakeEatAlt (snake:Snake) = 
-    {x=snake.x;y=snake.y;tail=snake.tail @ [(snake.x,snake.y)]}
+    {snake with tail = snake.tail @ [(snake.x,snake.y)]}
     
 let snakeEat food (snake:Snake) = 
     let hasFoodAtLocation = List.contains (snake.x,snake.y) food
@@ -65,7 +65,7 @@ let rec readLines () = seq{
 
 type Move = 
 |Left|Right|Up|Down|None
-
+ 
 let stringToTypeMove str = 
     match str with
     | "w" -> Move.Up
@@ -96,9 +96,9 @@ let isValidMove snake move =
     
 let updateGame (state:Game) (move:Move) = 
     let moved = stringToMove move state.snake
-    let gg = gameEat state (moved.x, moved.y)
-    let newSnake = {x=moved.x;y=moved.y;tail=updateTail gg.snake gg.snake.tail}
-    {snake=newSnake;food=gg.food;alive=isValidMove state.snake move}
+    let next = gameEat state (moved.x, moved.y)
+    let newSnake = {x=moved.x;y=moved.y;tail=updateTail next.snake next.snake.tail}
+    {snake=newSnake;food=next.food;alive=isValidMove state.snake move}
     
 let rec innerGameLoop game (frame:Frame) =
     frame.PrintFrame game.snake game.food |> ignore
