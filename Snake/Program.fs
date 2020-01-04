@@ -29,7 +29,7 @@ type Frame(w,h) =
 
 
 let moveSnake (snake:Snake) x y =
-    {x = snake.x + x; y=snake.y + y; tail=snake.tail}
+    {snake with x = snake.x + x; y=snake.y + y;}
 
 let snakeEatAlt (snake:Snake) = 
     {snake with tail = snake.tail @ [(snake.x,snake.y)]}
