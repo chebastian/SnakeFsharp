@@ -44,17 +44,16 @@ let snakeEat food (snake:Snake) =
 let eatFood (snake:Snake) food = 
     List.except [(snake.x,snake.y)] food
 
-let moveHeadToTail head tail = 
-    (List.tail tail) @ [head] 
+let moveHeadToTail newhead newtail = 
+    match newtail with
+    | head :: tail -> tail @ [newhead] 
+    | [] -> []
 
 let updateTail (snake:Snake) tail =
-    if List.length tail > 0 then
-        if snake.length > List.length tail then
-            (snake.x,snake.y) :: tail
-            else
-            moveHeadToTail (snake.x,snake.y) tail
+    if snake.length > List.length tail then
+        (snake.x,snake.y) :: tail
     else
-        tail
+        moveHeadToTail (snake.x,snake.y) tail
 
 let createFrame w h ch =
     List.init (w*h) (fun x -> ch)
@@ -125,7 +124,7 @@ let gameLoop game =
 
 [<EntryPoint>]
 let main argv =
-    let snake = {x=0;y=0;tail=[(0,0); (0,0)]}
+    let snake = {x=0;y=0;tail=[]}
     let game = {snake=snake;food=(3,3);alive=true}
     gameLoop game
 
