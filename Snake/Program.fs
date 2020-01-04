@@ -37,9 +37,9 @@ let snakeEatAlt (snake:Snake) =
 let snakeEat food (snake:Snake) = 
     let hasFoodAtLocation = List.contains (snake.x,snake.y) food
     if(hasFoodAtLocation) then
-        {x=snake.x;y=snake.y;tail=(snake.x,snake.y)::snake.tail}
+        {snake with tail=(snake.x,snake.y)::snake.tail}
     else
-        {x=snake.x;y=snake.y;tail=snake.tail}
+        snake
 
 let eatFood (snake:Snake) food = 
     List.except [(snake.x,snake.y)] food
