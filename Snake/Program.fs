@@ -102,7 +102,7 @@ let isValidMove snake move =
 let updateGame (state:Game) (move:Move) = 
     let moved = stringToMove move state.snake
     let next = updateSnakeAndFood state (moved.x, moved.y)
-    let newSnake = {x=moved.x;y=moved.y;tail=updateTail next.snake next.snake.tail}
+    let newSnake = {moved with tail=updateTail next.snake next.snake.tail}
     {snake=newSnake;food=next.food;alive=isValidMove state.snake move}
     
 let rec innerGameLoop game (frame:Frame) =
