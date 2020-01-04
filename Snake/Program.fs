@@ -84,11 +84,11 @@ let stringToMove move snake =
     | Move.None -> moveSnake snake 0 0
 
 
-let gameEat (state:Game) (pos:(int*int)) =
+let updateSnakeAndFood (state:Game) (pos:(int*int)) =
     if state.food = pos then
-        {snake=snakeEatAlt state.snake;food=rand2 0 8;alive=true}
+        {state with snake=snakeEatAlt state.snake;food=rand2 0 8}
     else
-        {snake=state.snake;food=state.food;alive=true} 
+        state
 
 let isValidMove snake move =
     let newsnake = stringToMove move snake
@@ -96,7 +96,7 @@ let isValidMove snake move =
     
 let updateGame (state:Game) (move:Move) = 
     let moved = stringToMove move state.snake
-    let next = gameEat state (moved.x, moved.y)
+    let next = updateSnakeAndFood state (moved.x, moved.y)
     let newSnake = {x=moved.x;y=moved.y;tail=updateTail next.snake next.snake.tail}
     {snake=newSnake;food=next.food;alive=isValidMove state.snake move}
     

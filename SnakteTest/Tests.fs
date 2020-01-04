@@ -65,11 +65,11 @@ let ``Game: The player scores by eating food ``() =
     Assert.True(state.score = 1,"i moved so i should have points")
     Assert.True(state.snake.length = 1, "moved snake tail")
 
-    Assert.True((gameEat game (0,0)).score = 0,"no points where no food") 
-    Assert.True((gameEat game (2,1)).score = 1,"Points where food") 
+    Assert.True((updateSnakeAndFood game (0,0)).score = 0,"no points where no food") 
+    Assert.True((updateSnakeAndFood game (2,1)).score = 1,"Points where food") 
 
-    Assert.True((gameEat game (0,0)).food = (2,1),"Food stays in position when not eaten")
-    Assert.False((gameEat game (2,1)).food = (2,1),"Food moves when eaten") 
+    Assert.True((updateSnakeAndFood game (0,0)).food = (2,1),"Food stays in position when not eaten")
+    Assert.False((updateSnakeAndFood game (2,1)).food = (2,1),"Food moves when eaten") 
     ()
 
 [<Fact>]
