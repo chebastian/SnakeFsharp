@@ -44,13 +44,10 @@ let snakeEat food (snake:Snake) =
 let eatFood (snake:Snake) food = 
     List.except [(snake.x,snake.y)] food
 
-let moveHeadToTail newhead newtail = 
-    match newtail with
-    | head :: tail -> tail @ [newhead] 
-    | [] -> []
-
 let updateTail (snake:Snake) = 
-    moveHeadToTail (snake.x,snake.y) snake.tail
+    match snake.tail with
+    | head :: tail -> tail @ [(snake.x,snake.y)] 
+    | [] -> []
 
 let createFrame w h ch =
     List.init (w*h) (fun x -> ch)
