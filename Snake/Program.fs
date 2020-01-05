@@ -31,7 +31,7 @@ type Frame(w,h) =
 let moveSnake (snake:Snake) x y =
     {snake with x = snake.x + x; y=snake.y + y;}
 
-let snakeEatAlt (snake:Snake) = 
+let appendHeadToTail (snake:Snake) = 
     {snake with tail = snake.tail @ [(snake.x,snake.y)]}
     
 let snakeEat food (snake:Snake) = 
@@ -85,7 +85,7 @@ let stringToMove move snake =
 
 let updateSnakeAndFood (state:Game) (pos:(int*int)) =
     if state.food = pos then
-        {state with snake=snakeEatAlt state.snake;food=rand2 0 8}
+        {state with snake=appendHeadToTail state.snake;food=rand2 0 8}
     else
         state
 
