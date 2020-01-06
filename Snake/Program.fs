@@ -83,11 +83,17 @@ let stringToMove move snake =
     | Move.None -> moveSnake snake 0 0
 
 
+let createNewFood = 
+    rand2 0 8
+
 let updateSnakeAndFood (state:Game) (pos:(int*int)) =
     if state.food = pos then
         {state with snake=appendHeadToTail state.snake;food=rand2 0 8}
     else
         state
+
+let snakeEatsFood snake food = 
+    (snake.x,snake.y) = food
 
 let isValidMove snake move =
     let newsnake = stringToMove move snake
@@ -95,9 +101,17 @@ let isValidMove snake move =
     
 let updateGame (state:Game) (move:Move) = 
     let moved = stringToMove move state.snake
-    let next = updateSnakeAndFood state (moved.x, moved.y)
-    let newSnake = {moved with tail=updateTail next.snake}
-    {snake=newSnake;food=next.food;alive=isValidMove state.snake move}
+    //let next = updateSnakeAndFood state (moved.x, moved.y)
+    let nextSnake = match snakeEatsFood moved state.food with 
+                    | true -> appendHeadToTail moved
+                    | false -> moved
+
+    let nextFood = match snakeEatsFood moved state.food with 
+                    | true -> createNewFood
+                    | false -> state.food
+
+    let newSnake = {nextSnake with tail=updateTail nextSnake}
+    {snake=newSnake;food=nextFood;alive=isValidMove state.snake move}
     
 let rec innerGameLoop game (frame:Frame) =
     frame.PrintFrame game.snake game.food |> ignore
